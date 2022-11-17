@@ -1,0 +1,25 @@
+{
+    "name": "ptrufanov1/sitemap-generator",
+    "description": "Generate sitemap file. File format supports: xml, JSON, csv",
+    "keywords": ["php", "sitemap", "generate", "xml", "json", "csv"],
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Ptrufanov1\\SitemapGenerator\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Trufanov Pavel",
+            "email": "trufanov.pavel.trufanov@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^8.0",
+        "ext-xmlwriter": "*",
+        "ext-mbstring": "*"
+    },
+    "prefer-stable": true
+}
