@@ -67,7 +67,7 @@ class Sitemap {
 						break;
 					case 'priority':
 						$vf = floatval($v);
-						if ($vf != $v || $vf < 0 || $vf > 1) {
+						if ($vf !== $v || $vf < 0 || $vf > 1) {
 							throw new InvalidPriorityValueException();
 						}
 						break;
