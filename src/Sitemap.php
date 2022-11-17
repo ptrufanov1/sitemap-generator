@@ -98,6 +98,8 @@ class Sitemap {
 	public function saveXml(string $path): bool {
 		$xmlWriter = new XMLWriter();
 		$xmlWriter->openMemory();
+		$xmlWriter->setIndent(true);
+		$xmlWriter->setIndentString('	');
 		$xmlWriter->startDocument('1.0', 'UTF-8');
 		$xmlWriter->startElement('urlset');
 		$xmlWriter->writeAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');

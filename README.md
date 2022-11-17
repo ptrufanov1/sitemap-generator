@@ -84,7 +84,7 @@ $path = $_SERVER['DOCUMENT_ROOT']."/sitemap/";
 
 try {
 	if (Sitemap::load($pages)->saveXml($path)) {
-        echo "Sitemap save succeful!";
+        echo "Sitemap save successful!";
     }
 } catch (Exception $e) {
 	echo "Error sitemap generate: ".$e->getMessage();
