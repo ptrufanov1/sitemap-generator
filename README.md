@@ -12,7 +12,7 @@ Installation via Composer
 composer require ptrufanov1/sitemap-generator
 ```
 
-That, make sure your application autoloads Composer classes by including vendor/autoload.php.
+That, make sure your application autoload Composer classes by including vendor/autoload.php.
 
 ```php
 require "vendor/autoload.php";
@@ -108,7 +108,7 @@ Generate JSON sitemap file
 Sitemap::load($pages)->saveJson($path)
 ```
 
-Return `true` if file succeful generate. Or throw an exception on error.
+Return `true` if file successful generate. Or throw an exception on error.
 
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
