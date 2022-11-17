@@ -86,6 +86,13 @@ class Sitemap {
 	private static function processingData(array $pages) :array {
 		foreach ($pages as $i => $page) {
 			foreach (self::dataSort($page) as $p => $v) {
+
+				$p =  mb_strtolower($p);
+
+				if ($p == 'priority') {
+					$v = number_format($v, 1);
+				}
+
 				$pages[$i][$p] = htmlentities(mb_strtolower($v));
 			}
 		}
@@ -121,7 +128,7 @@ class Sitemap {
 			$xmlWriter->text($pageData['priority']);
 			$xmlWriter->endElement();
 
-			$xmlWriter->startElement('priority');
+			$xmlWriter->startElement('changefreq');
 			$xmlWriter->text($pageData['changefreq']);
 			$xmlWriter->endElement();
 
