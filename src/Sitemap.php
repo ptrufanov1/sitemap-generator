@@ -2,6 +2,7 @@
 
 namespace Ptrufanov1\SitemapGenerator;
 
+use XMLWriter;
 use Exception;
 use Ptrufanov1\SitemapGenerator\Exceptions\{FileCreateException,
 	InvalidChangefreqValueException,
@@ -10,8 +11,8 @@ use Ptrufanov1\SitemapGenerator\Exceptions\{FileCreateException,
 	InvalidPageDataException,
 	InvalidPriorityValueException,
 	PermissionDeniedException,
+	RequiredFieldException,
 	UnknownTagException};
-use XMLWriter;
 
 class Sitemap {
 
@@ -32,25 +33,26 @@ class Sitemap {
 		'never',
 	];
 
-	public function __construct(private array $pages, private string $fileName) {}
+	private function __construct(private array $pages, private string $fileName) {}
 
 	/**
 	 * @throws Exception
 	 */
 	public static function load(array $pages, string $fileName = 'sitemap'): self {
-		self::validateData($pages);
-
-		$pagesPrepared = self::processingData($pages);
+		$pagesPrepared = self::processingData(self::validateData($pages));
 		return new static($pagesPrepared, $fileName);
 	}
 
 	/**
 	 * @throws Exception
 	 */
-	private static function validateData(array $pages):void {
-		foreach ($pages as $pageData) {
-			if (!is_array($pageData) || !count($pageData)) {
+	private static function validateData(array $pages): array {
+		foreach ($pages as $index => $pageData) {
+
+			if (!is_array($pageData)) {
 				throw new InvalidPageDataException();
+			} elseif (!empty(array_diff(array_keys(self::$keyPosition), array_keys($pageData)))) {
+				throw new RequiredFieldException($index);
 			}
 
 			foreach ($pageData as $p => $v) {
@@ -67,7 +69,7 @@ class Sitemap {
 						break;
 					case 'priority':
 						$vf = floatval($v);
-						if ($vf !== $v || $vf < 0 || $vf > 1) {
+						if ($vf != $v || $vf < 0 || $vf > 1) {
 							throw new InvalidPriorityValueException();
 						}
 						break;
@@ -81,13 +83,14 @@ class Sitemap {
 				}
 			}
 		}
+		return $pages;
 	}
 
-	private static function processingData(array $pages) :array {
+	private static function processingData(array $pages): array {
 		foreach ($pages as $i => $page) {
 			foreach (self::dataSort($page) as $p => $v) {
 
-				$p =  mb_strtolower($p);
+				$p = mb_strtolower($p);
 
 				if ($p == 'priority') {
 					$v = number_format($v, 1);
@@ -145,7 +148,7 @@ class Sitemap {
 	 * @throws Exception
 	 */
 	public function saveCsv(string $path): bool {
-		$content = implode(';', array_keys(self::dataSort(self::$keyPosition)));
+		$content = implode(';', array_keys(self::$keyPosition));
 		$content .= PHP_EOL;
 		foreach ($this->pages as $pageData) {
 			$content .= implode(';', $pageData);
@@ -159,7 +162,7 @@ class Sitemap {
 	 */
 	public function saveJson(string $path): bool {
 		return $this->saveToFile($path, 'json',
-			json_encode($this->pages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES )
+			json_encode($this->pages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
 		);
 	}
 
@@ -180,11 +183,11 @@ class Sitemap {
 		if (!is_dir($path) && !@mkdir($path, 0755, true)) {
 			throw new PermissionDeniedException();
 		}
-		return $path."/$this->fileName.$fileType";
+		return $path . "/$this->fileName.$fileType";
 	}
 
 	private static function dataSort(array $data): array {
-		uksort($data, fn($a, $b) => self::$keyPosition[$a] > self::$keyPosition[$b]? 1: -1);
+		uksort($data, fn($a, $b) => self::$keyPosition[$a] > self::$keyPosition[$b] ? 1 : -1);
 		return $data;
 	}
 
