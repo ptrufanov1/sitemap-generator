@@ -23,7 +23,7 @@ The minimum requirement by this project template that your Web server supports `
 ## How to use it
 
 ```php
-require_once "../vendor/autoload.php";
+require_once "vendor/autoload.php";
 
 use Ptrufanov1\SitemapGenerator\Sitemap;
 
